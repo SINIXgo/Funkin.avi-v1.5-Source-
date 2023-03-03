@@ -25,9 +25,8 @@ class OutdatedState extends MusicBeatState
 
 		warnText = new FlxText(0, 0, FlxG.width,
 			"Sup bro, looks like you're running an   \n
-			outdated version of Demolition Engine (" + MainMenuState.DemoEngineVersion + "),\n
+			outdated version of Psych Engine,\n
 			please update to " + TitleState.updateVersion + "!\n
-			Press ENTER to view the latest version.\n
 			Press ESCAPE to proceed anyway.\n
 			\n
 			Thank you for using the Engine!",
@@ -35,10 +34,6 @@ class OutdatedState extends MusicBeatState
 		warnText.setFormat("VCR OSD Mono", 32, FlxColor.WHITE, CENTER);
 		warnText.screenCenter(Y);
 		add(warnText);
-
-		#if mobileC
-		addVirtualPad(NONE, A_B);
-		#end
 	}
 
 	override function update(elapsed:Float)
@@ -46,7 +41,7 @@ class OutdatedState extends MusicBeatState
 		if(!leftState) {
 			if (controls.ACCEPT) {
 				leftState = true;
-				CoolUtil.browserLoad("https://github.com/DEMOLITIONDON96/Demolition-Engine/releases");
+				CoolUtil.browserLoad("https://github.com/ShadowMario/FNF-PsychEngine/releases");
 			}
 			else if(controls.BACK) {
 				leftState = true;
@@ -57,7 +52,7 @@ class OutdatedState extends MusicBeatState
 				FlxG.sound.play(Paths.sound('cancelMenu'));
 				FlxTween.tween(warnText, {alpha: 0}, 1, {
 					onComplete: function (twn:FlxTween) {
-						MusicBeatState.switchState(new MainMenuState());
+						MusicBeatState.switchState(new ClassifiedMainMenu());
 					}
 				});
 			}

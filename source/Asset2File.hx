@@ -30,5 +30,3 @@ class Asset2File
 		#end
 	}
 }
-.
-	

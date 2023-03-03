@@ -17,7 +17,7 @@ class DiscordClient
 	{
 		trace("Discord Client starting...");
 		DiscordRpc.start({
-			clientID: "963434291860234321",
+			clientID: "1076712851391127684",
 			onReady: onReady,
 			onError: onError,
 			onDisconnected: onDisconnected
@@ -31,13 +31,6 @@ class DiscordClient
 			//trace("Discord Client Update");
 		}
 
-		while (false)
-			{
-				DiscordRpc.process();
-				sleep(2);
-				trace('Error On Discord Client!');
-			}
-
 		DiscordRpc.shutdown();
 	}
 	
@@ -49,10 +42,10 @@ class DiscordClient
 	static function onReady()
 	{
 		DiscordRpc.presence({
-			details: "Beginning the Show...",
+			details: "In the Menus",
 			state: null,
 			largeImageKey: 'icon',
-			largeImageText: "Funkin.avi"
+			largeImageText: "Psych Engine"
 		});
 	}
 
@@ -76,7 +69,7 @@ class DiscordClient
 		isInitialized = true;
 	}
 
-	public static function changePresence(details:String, state:Null<String>, ?smallImageKey : String, ?hasStartTimestamp : Bool, ?endTimestamp: Float, ?image : String)
+	public static function changePresence(details:String, state:Null<String>, ?smallImageKey : String, ?hasStartTimestamp : Bool, ?endTimestamp: Float)
 	{
 		var startTimestamp:Float = if(hasStartTimestamp) Date.now().getTime() else 0;
 
@@ -88,15 +81,15 @@ class DiscordClient
 		DiscordRpc.presence({
 			details: details,
 			state: state,
-			largeImageKey: image,
-			largeImageText: "Funkin.avi: v" + MainMenuState.MouseVersion,
+			largeImageKey: 'icon',
+			largeImageText: "Engine Version: "+ MainMenuState.psychEngineVersion,
 			smallImageKey : smallImageKey,
 			// Obtained times are in milliseconds so they are divided so Discord can use it
 			startTimestamp : Std.int(startTimestamp / 1000),
             endTimestamp : Std.int(endTimestamp / 1000)
 		});
 
-		//trace('Discord RPC Updated. Arguments: $details, $state, $smallImageKey, $hasStartTimestamp, $endTimestamp'); //k
+		//trace('Discord RPC Updated. Arguments: $details, $state, $smallImageKey, $hasStartTimestamp, $endTimestamp');
 	}
 
 	#if LUA_ALLOWED
@@ -104,7 +97,7 @@ class DiscordClient
 		Lua_helper.add_callback(lua, "changePresence", function(details:String, state:Null<String>, ?smallImageKey:String, ?hasStartTimestamp:Bool, ?endTimestamp:Float) {
 			changePresence(details, state, smallImageKey, hasStartTimestamp, endTimestamp);
 		});
-	} //werid about you can do something of this in lua
+	}
 	#end
 }
 #end

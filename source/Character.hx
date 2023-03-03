@@ -1,8 +1,10 @@
 package;
-characters
+
 import animateatlas.AtlasFrameMaker;
 import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.tweens.FlxEase;
+import flixel.util.FlxColor;
 import flixel.addons.effects.FlxTrail;
 import flixel.animation.FlxBaseAnimation;
 import flixel.graphics.frames.FlxAtlasFrames;
@@ -46,6 +48,7 @@ typedef AnimArray = {
 
 class Character extends FlxSprite
 {
+	public var mostRecentRow:Int = 0;
 	public var animOffsets:Map<String, Array<Dynamic>>;
 	public var debugMode:Bool = false;
 
@@ -69,6 +72,11 @@ class Character extends FlxSprite
 	public var positionArray:Array<Float> = [0, 0];
 	public var cameraPosition:Array<Float> = [0, 0];
 
+	public var doubleGhosts:Array<FlxSprite> = [];
+	public var ghostID:Int = 0;
+	public var ghostAnim:String = '';
+	public var ghostTweenGRP:Array<FlxTween> = [];
+
 	public var hasMissAnimations:Bool = false;
 
 	//Used on Character Editor
@@ -82,6 +90,14 @@ class Character extends FlxSprite
 	public function new(x:Float, y:Float, ?character:String = 'bf', ?isPlayer:Bool = false)
 	{
 		super(x, y);
+
+		for(i in 0...4){
+			var ghost = new FlxSprite();
+			ghost.visible = false;
+			ghost.antialiasing = true;
+			ghost.alpha = 0.6;
+			doubleGhosts.push(ghost);
+		}
 
 		#if (haxe >= "4.0.0")
 		animOffsets = new Map();
@@ -260,7 +276,7 @@ class Character extends FlxSprite
 		{
 			if(heyTimer > 0)
 			{
-				heyTimer -= elapsed;
+				heyTimer -= elapsed * PlayState.instance.playbackRate;
 				if(heyTimer <= 0)
 				{
 					if(specialAnim && animation.curAnim.name == 'hey' || animation.curAnim.name == 'cheer')
@@ -298,7 +314,7 @@ class Character extends FlxSprite
 					holdTimer += elapsed;
 				}
 
-				if (holdTimer >= Conductor.stepCrochet * 0.0011 * singDuration)
+				if (holdTimer >= Conductor.stepCrochet * (0.0011 / (FlxG.sound.music != null ? FlxG.sound.music.pitch : 1)) * singDuration)
 				{
 					dance();
 					holdTimer = 0;
@@ -310,11 +326,21 @@ class Character extends FlxSprite
 				playAnim(animation.curAnim.name + '-loop');
 			}
 		}
+		for (ghost in doubleGhosts)
+			ghost.update(elapsed);
 		super.update(elapsed);
 	}
 
 	public var danced:Bool = false;
 
+	override function draw(){
+		for(ghost in doubleGhosts){
+			if(ghost.visible)
+				ghost.draw();
+		}
+		
+		super.draw();
+	}
 	/**
 	 * FOR GF DANCING SHIT
 	 */
@@ -416,5 +442,58 @@ class Character extends FlxSprite
 	public function quickAnimAdd(name:String, anim:String)
 	{
 		animation.addByPrefix(name, anim, 24, false);
+	}
+
+	public function playGhostAnim(ghostID = 0, AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0){
+
+		var ghost = doubleGhosts[ghostID];
+		ghost.scale.copyFrom(scale);
+		ghost.updateHitbox();
+		ghost.frames = frames;
+		ghost.animation.copyFrom(animation);
+		ghost.x = x;
+		ghost.y = y;
+		ghost.flipX = flipX;
+		ghost.flipY = flipY;
+		ghost.alpha = alpha * 0.6;
+		ghost.visible = true;
+		ghost.color = FlxColor.fromRGB(healthColorArray[0], healthColorArray[1], healthColorArray[2]);
+		ghost.animation.play(AnimName, Force, Reversed, Frame);
+		if (ghostTweenGRP[ghostID] != null)
+			ghostTweenGRP[ghostID].cancel();
+
+		var direction:String = AnimName.substring(4);
+
+		var directionMap:Map<String, Array<Float>> = [
+			'UP' => [0, -45],
+			'DOWN' => [0, 45],
+			'RIGHT' => [45, 0],
+			'LEFT' => [-45, 0],
+			'UP-alt' => [0, -45],
+			'DOWN-alt' => [0, 45],
+			'RIGHT-alt' => [45, 0],
+			'LEFT-alt' => [-45, 0],
+		];
+		//had to add alt cuz it kept crashing on room code LOL
+
+		var moveDirections:Array<Float> = [
+			x + (directionMap.get(direction)[0]),
+			y + (directionMap.get(direction)[1])
+		];
+
+		ghostTweenGRP[ghostID] = FlxTween.tween(ghost, {alpha: 0, x: moveDirections[0], y: moveDirections[1]}, 0.75, {
+			ease: FlxEase.linear,
+			onComplete: function(twn:FlxTween)
+			{
+				ghost.visible = false;
+				ghostTweenGRP[ghostID] = null;
+			}
+		});
+
+		var daOffset = animOffsets.get(AnimName);
+		if (animOffsets.exists(AnimName))
+			ghost.offset.set(daOffset[0], daOffset[1]);
+		else
+			ghost.offset.set(0, 0);
 	}
 }

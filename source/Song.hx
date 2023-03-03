@@ -15,8 +15,6 @@ using StringTools;
 typedef SwagSong =
 {
 	var song:String;
-	var charter:String;
-	var composer:String;
 	var notes:Array<SwagSection>;
 	var events:Array<Dynamic>;
 	var bpm:Float;
@@ -25,7 +23,6 @@ typedef SwagSong =
 
 	var player1:String;
 	var player2:String;
-	var player3:String; //Yeah guys it deprecated use gf version instead
 	var gfVersion:String;
 	var stage:String;
 
@@ -37,8 +34,6 @@ typedef SwagSong =
 class Song
 {
 	public var song:String;
-	public var charter:String;
-	public var composer:String;
 	public var notes:Array<SwagSection>;
 	public var events:Array<Dynamic>;
 	public var bpm:Float;
@@ -47,13 +42,11 @@ class Song
 	public var splashSkin:String;
 	public var speed:Float = 1;
 	public var stage:String;
-
 	public var player1:String = 'bf';
 	public var player2:String = 'dad';
-	public var player3:String = 'gf'; //also deprecated dont use dis either
 	public var gfVersion:String = 'gf';
 
-	private static function onLoadJson(songJson:SwagSong) // Convert old charts to newest format
+	private static function onLoadJson(songJson:Dynamic) // Convert old charts to newest format
 	{
 		if(songJson.gfVersion == null)
 		{
@@ -99,7 +92,7 @@ class Song
 		
 		var formattedFolder:String = Paths.formatToSongPath(folder);
 		var formattedSong:String = Paths.formatToSongPath(jsonInput);
-		#if windows 
+		#if desktop 
 		var moddyFile:String = Paths.modsJson(formattedFolder + '/' + formattedSong);
 		if(FileSystem.exists(moddyFile)) {
 			rawJson = File.getContent(moddyFile).trim();
@@ -107,7 +100,7 @@ class Song
 		#end
 
 		if(rawJson == null) {
-			#if windows 
+			#if desktop 
 			rawJson = File.getContent(Paths.json(formattedFolder + '/' + formattedSong)).trim();
 			#else
 			rawJson = Assets.getText(Paths.json(formattedFolder + '/' + formattedSong)).trim();
@@ -136,7 +129,7 @@ class Song
 				daSong = songData.song;
 				daBpm = songData.bpm; */
 
-		var songJson:SwagSong = parseJSONshit(rawJson);
+		var songJson:Dynamic = parseJSONshit(rawJson);
 		if(jsonInput != 'events') StageData.loadDirectory(songJson);
 		onLoadJson(songJson);
 		return songJson;

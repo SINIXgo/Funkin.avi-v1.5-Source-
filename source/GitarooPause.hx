@@ -47,10 +47,6 @@ class GitarooPause extends MusicBeatState
 
 		changeThing();
 
-		#if mobileC
-		addVirtualPad(LEFT_RIGHT, A_B);
-		#end
-
 		super.create();
 	}
 
@@ -72,8 +68,8 @@ class GitarooPause extends MusicBeatState
 				PlayState.seenCutscene = false;
 				PlayState.deathCounter = 0;
 				PlayState.cpuControlled = false;
-				MusicBeatState.switchState(new MainMenuState());
-				FlxG.sound.playMusic(Paths.music('funkinAVI/menu/MenuMusic'));
+				MusicBeatState.switchState(new ClassifiedMainMenu());
+				FlxG.sound.playMusic(Paths.music('classified_menu'));
 			}
 		}
 

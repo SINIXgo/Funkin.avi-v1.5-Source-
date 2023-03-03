@@ -1,11 +1,8 @@
 package;
 
-import flixel.addons.ui.U;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
-import PlayState;
-import MusicBeatState;
 
 using StringTools;
 
@@ -17,8 +14,6 @@ class StrumNote extends FlxSprite
 	public var direction:Float = 90;//plan on doing scroll directions soon -bb
 	public var downScroll:Bool = false;//plan on doing scroll directions soon -bb
 	public var sustainReduce:Bool = true;
-	//Note Skin
-	public var doAntialiasing:Bool = ClientPrefs.globalAntialiasing;
 	
 	private var player:Int;
 	
@@ -31,7 +26,7 @@ class StrumNote extends FlxSprite
 		return value;
 	}
 
-	public function new(x:Float, y:Float, leData:Int, player:Int, char:String = 'bf') {
+	public function new(x:Float, y:Float, leData:Int, player:Int) {
 		colorSwap = new ColorSwap();
 		shader = colorSwap.shader;
 		noteData = leData;
@@ -39,60 +34,9 @@ class StrumNote extends FlxSprite
 		this.noteData = leData;
 		super(x, y);
 
-		var skin:String;
-		skin = 'NOTE_assets';
-		
+		var skin:String = 'NOTE_assets';
 		if(PlayState.SONG.arrowSkin != null && PlayState.SONG.arrowSkin.length > 1) skin = PlayState.SONG.arrowSkin;
-		switch(char)
-		{
-			case 'dad':
-				skin = 'Skins/DADNOTE_assets';
-				doAntialiasing = true; //same as before
-			case 'gf' | 'gf-opponent' | 'gf-car' | 'gf-christmas':
-				skin = 'Skins/gfNOTE_assets';
-				doAntialiasing = true;
-			case 'mom' | 'mom-car':
-				skin = 'Skins/MOMNOTE_assets';
-				doAntialiasing = true;
-			case 'parents-christmas':
-				skin = 'Skins/ParentsNOTE_assets';
-				doAntialiasing = true;
-			case 'pico' | 'pico-player':
-				skin = 'Skins/picoNOTE_assets';
-				doAntialiasing = true;
-			case 'monster' | 'monster-christmas':
-				skin = 'Skins/LemonboiNOTE_assets';
-				doAntialiasing = true;
-			case 'spooky':
-				skin = 'Skins/SpookyNOTE_assets';
-				doAntialiasing = true;
-			case 'mickey' | 'mickeysadistic' | 'mickeyinsane' | 'mickeyLEGACY' | 'mickeygiveup' | 'mickeyNEW' | 'bf-fake' | 'bffake' | 'bf-demon' | 'bfgrey' | 'bfsatan' | 'bfworried' | 'HunterGoofy' | 'smiles':
-				skin = 'Skins/GreyNOTE_assets';
-				doAntialiasing = true;
-			case 'Walt' | 'bf-firstperson':
-				skin = 'Skins/WaltNOTES';
-				doAntialiasing = true;
-			case 'bf-pixel-opponent' /*| 'bf-pixel'*/:
-				/*if(PlayState.isPixelStage) {
-					skin = 'pixelUI/pixelBF-notes';
-					doAntialiasing = false;
-				}else{*/
-					skin = 'Skins/pixelBF-notes';
-					doAntialiasing = false;
-				//}
-			/*case 'spirit':
-				if(PlayState.isPixelStage) {
-					skin = 'pixelUI/SpiritNotes';
-					doAntialiasing = false;
-				}else{	
-					skin = 'Skins/SpiritNotes';
-					doAntialiasing = false;
-				}*/
-			default:
-				if(PlayState.SONG.arrowSkin != null && PlayState.SONG.arrowSkin.length > 1) skin = PlayState.SONG.arrowSkin;
-		}
 		texture = skin; //Load texture and anims
-
 
 		scrollFactor.set();
 	}
@@ -104,74 +48,40 @@ class StrumNote extends FlxSprite
 
 		if(PlayState.isPixelStage)
 		{
-			if(PlayState.curStage != 'RelapseStage')
+			loadGraphic(Paths.image('pixelUI/' + texture));
+			width = width / 4;
+			height = height / 5;
+			loadGraphic(Paths.image('pixelUI/' + texture), true, Math.floor(width), Math.floor(height));
+
+			antialiasing = false;
+			setGraphicSize(Std.int(width * PlayState.daPixelZoom));
+
+			animation.add('green', [6]);
+			animation.add('red', [7]);
+			animation.add('blue', [5]);
+			animation.add('purple', [4]);
+			switch (Math.abs(noteData) % 4)
 			{
-				loadGraphic(Paths.image('pixelUI/' + texture));
-				width = width / 4;
-				height = height / 5;
-				loadGraphic(Paths.image('pixelUI/' + texture), true, Math.floor(width), Math.floor(height));
-
-				antialiasing = false;
-				setGraphicSize(Std.int(width * PlayState.daPixelZoom));
-
-				animation.add('green', [6]);
-				animation.add('red', [7]);
-				animation.add('blue', [5]);
-				animation.add('purple', [4]);
-				switch (Math.abs(noteData))
-				{
-					case 0:
-						animation.add('static', [0]);
-						animation.add('pressed', [4, 8], 12, false);
-						animation.add('confirm', [12, 16], 24, false);
-					case 1:
-						animation.add('static', [1]);
-						animation.add('pressed', [5, 9], 12, false);
-						animation.add('confirm', [13, 17], 24, false);
-					case 2:
-						animation.add('static', [2]);
-						animation.add('pressed', [6, 10], 12, false);
-						animation.add('confirm', [14, 18], 12, false);
-					case 3:
-						animation.add('static', [3]);
-						animation.add('pressed', [7, 11], 12, false);
-						animation.add('confirm', [15, 19], 24, false);
-				}
-			}else{
-						loadGraphic(Paths.image('pixelUI/relapsePhase1NOTES'));
-						width = width / 4;
-						height = height / 5;
-						loadGraphic(Paths.image('pixelUI/relapsePhase1NOTES'), true, Math.floor(width), Math.floor(height));
-
-						antialiasing = false;
-						setGraphicSize(Std.int(width * PlayState.daPixelZoom));
-
-						animation.add('green', [6]);
-						animation.add('red', [7]);
-						animation.add('blue', [5]);
-						animation.add('purple', [4]);
-						switch (Math.abs(noteData))
-						{
-							case 0:
-								animation.add('static', [0]);
-								animation.add('pressed', [4, 8], 12, false);
-								animation.add('confirm', [12, 16], 24, false);
-							case 1:
-								animation.add('static', [1]);
-								animation.add('pressed', [5, 9], 12, false);
-								animation.add('confirm', [13, 17], 24, false);
-							case 2:
-								animation.add('static', [2]);
-								animation.add('pressed', [6, 10], 12, false);
-								animation.add('confirm', [14, 18], 12, false);
-							case 3:
-								animation.add('static', [3]);
-								animation.add('pressed', [7, 11], 12, false);
-								animation.add('confirm', [15, 19], 24, false);
-						}
-					}
-					
-			}else{
+				case 0:
+					animation.add('static', [0]);
+					animation.add('pressed', [4, 8], 12, false);
+					animation.add('confirm', [12, 16], 24, false);
+				case 1:
+					animation.add('static', [1]);
+					animation.add('pressed', [5, 9], 12, false);
+					animation.add('confirm', [13, 17], 24, false);
+				case 2:
+					animation.add('static', [2]);
+					animation.add('pressed', [6, 10], 12, false);
+					animation.add('confirm', [14, 18], 12, false);
+				case 3:
+					animation.add('static', [3]);
+					animation.add('pressed', [7, 11], 12, false);
+					animation.add('confirm', [15, 19], 24, false);
+			}
+		}
+		else
+		{
 			frames = Paths.getSparrowAtlas(texture);
 			animation.addByPrefix('green', 'arrowUP');
 			animation.addByPrefix('blue', 'arrowDOWN');
@@ -181,7 +91,7 @@ class StrumNote extends FlxSprite
 			antialiasing = ClientPrefs.globalAntialiasing;
 			setGraphicSize(Std.int(width * 0.7));
 
-			switch (Math.abs(noteData))
+			switch (Math.abs(noteData) % 4)
 			{
 				case 0:
 					animation.addByPrefix('static', 'arrowLEFT');
@@ -243,9 +153,12 @@ class StrumNote extends FlxSprite
 			colorSwap.saturation = 0;
 			colorSwap.brightness = 0;
 		} else {
-			colorSwap.hue = ClientPrefs.arrowHSV[noteData % 4][0] / 360;
-			colorSwap.saturation = ClientPrefs.arrowHSV[noteData % 4][1] / 100;
-			colorSwap.brightness = ClientPrefs.arrowHSV[noteData % 4][2] / 100;
+			if (noteData > -1 && noteData < ClientPrefs.arrowHSV.length)
+			{
+				colorSwap.hue = ClientPrefs.arrowHSV[noteData][0] / 360;
+				colorSwap.saturation = ClientPrefs.arrowHSV[noteData][1] / 100;
+				colorSwap.brightness = ClientPrefs.arrowHSV[noteData][2] / 100;
+			}
 
 			if(animation.curAnim.name == 'confirm' && !PlayState.isPixelStage) {
 				centerOrigin();

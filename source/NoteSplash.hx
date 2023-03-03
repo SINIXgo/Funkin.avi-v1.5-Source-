@@ -13,105 +13,25 @@ class NoteSplash extends FlxSprite
 	public function new(x:Float = 0, y:Float = 0, ?note:Int = 0) {
 		super(x, y);
 
-		switch(PlayState.curStage)
-		{
-			case 'RelapseStage':
-				var skin:String = 'NoteSplashSkins/GREYnoteSplashes';
-				if(PlayState.SONG.splashSkin != null && PlayState.SONG.splashSkin.length > 0) skin = PlayState.SONG.splashSkin;
+		var skin:String = 'noteSplashes';
+		if(PlayState.SONG.splashSkin != null && PlayState.SONG.splashSkin.length > 0) skin = PlayState.SONG.splashSkin;
 
-				loadAnims(skin);
-				
-				colorSwap = new ColorSwap();
-				shader = colorSwap.shader;
+		loadAnims(skin);
+		
+		colorSwap = new ColorSwap();
+		shader = colorSwap.shader;
 
-				setupNoteSplash(x, y, note);
-				antialiasing = ClientPrefs.globalAntialiasing;
-			case 'WaltStage':
-				var skin:String = 'NoteSplashSkins/waltSplashes';
-				if(PlayState.SONG.splashSkin != null && PlayState.SONG.splashSkin.length > 0) skin = PlayState.SONG.splashSkin;
-
-				loadAnims(skin);
-				
-				colorSwap = new ColorSwap();
-				shader = colorSwap.shader;
-
-				setupNoteSplash(x, y, note);
-				antialiasing = ClientPrefs.globalAntialiasing;
-			case 'Studio' | 'Forest' | 'EndlessLoop' | 'ForestNEW' | 'Office':
-				var skin:String = 'NoteSplashSkins/noteSplashesGREY';
-				if(PlayState.SONG.splashSkin != null && PlayState.SONG.splashSkin.length > 0) skin = PlayState.SONG.splashSkin;
-
-				loadAnims(skin);
-				
-				colorSwap = new ColorSwap();
-				shader = colorSwap.shader;
-
-				setupNoteSplash(x, y, note);
-				antialiasing = ClientPrefs.globalAntialiasing;
-			default:
-				var skin:String = 'NoteSplashSkins/noteSplashes';
-				if(PlayState.SONG.splashSkin != null && PlayState.SONG.splashSkin.length > 0) skin = PlayState.SONG.splashSkin;
-
-				loadAnims(skin);
-				
-				colorSwap = new ColorSwap();
-				shader = colorSwap.shader;
-
-				setupNoteSplash(x, y, note);
-				antialiasing = ClientPrefs.globalAntialiasing;
-		}
+		setupNoteSplash(x, y, note);
+		antialiasing = ClientPrefs.globalAntialiasing;
 	}
 
 	public function setupNoteSplash(x:Float, y:Float, note:Int = 0, texture:String = null, hueColor:Float = 0, satColor:Float = 0, brtColor:Float = 0) {
 		setPosition(x - Note.swagWidth * 0.95, y - Note.swagWidth);
 		alpha = 0.6;
 
-		switch(PlayState.curStage)
-		{
-			case 'RelapseStage':
-				if(texture == null) {
-				texture = 'NoteSplashSkins/GREYnoteSplashes';
-				if(PlayState.SONG.splashSkin != null && PlayState.SONG.splashSkin.length > 0) texture = PlayState.SONG.splashSkin;
-
-				if(PlayState.isPixelStage) {
-					texture = 'pixelUI/GREYnoteSplashes';
-					if(PlayState.SONG.splashSkin != null && PlayState.SONG.splashSkin.length > 0) texture = 'pixelUI/' + PlayState.SONG.splashSkin;
-					if(animation.curAnim != null)animation.curAnim.frameRate = 12;
-				}
-			}
-			case 'WaltStage':
-				if(texture == null) {
-				texture = 'NoteSplashSkins/waltSplashes';
-				if(PlayState.SONG.splashSkin != null && PlayState.SONG.splashSkin.length > 0) texture = PlayState.SONG.splashSkin;
-
-				if(PlayState.isPixelStage) {
-					texture = 'pixelUI/noteSplashes';
-					if(PlayState.SONG.splashSkin != null && PlayState.SONG.splashSkin.length > 0) texture = 'pixelUI/' + PlayState.SONG.splashSkin;
-					if(animation.curAnim != null)animation.curAnim.frameRate = 12;
-				}
-			}
-			case 'Studio' | 'Forest' | 'EndlessLoop' | 'ForestNEW' | 'Office':
-				if(texture == null) {
-				texture = 'NoteSplashSkins/noteSplashesGREY';
-				if(PlayState.SONG.splashSkin != null && PlayState.SONG.splashSkin.length > 0) texture = PlayState.SONG.splashSkin;
-
-				if(PlayState.isPixelStage) {
-					texture = 'pixelUI/noteSplashes';
-					if(PlayState.SONG.splashSkin != null && PlayState.SONG.splashSkin.length > 0) texture = 'pixelUI/' + PlayState.SONG.splashSkin;
-					if(animation.curAnim != null)animation.curAnim.frameRate = 12;
-				}
-			}
-			default:
-				if(texture == null) {
-				texture = 'NoteSplashSkins/noteSplashes';
-				if(PlayState.SONG.splashSkin != null && PlayState.SONG.splashSkin.length > 0) texture = PlayState.SONG.splashSkin;
-
-				if(PlayState.isPixelStage) {
-					texture = 'pixelUI/noteSplashes';
-					if(PlayState.SONG.splashSkin != null && PlayState.SONG.splashSkin.length > 0) texture = 'pixelUI/' + PlayState.SONG.splashSkin;
-					if(animation.curAnim != null)animation.curAnim.frameRate = 12;
-				}
-			}
+		if(texture == null) {
+			texture = 'noteSplashes';
+			if(PlayState.SONG.splashSkin != null && PlayState.SONG.splashSkin.length > 0) texture = PlayState.SONG.splashSkin;
 		}
 
 		if(textureLoaded != texture) {

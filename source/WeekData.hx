@@ -89,7 +89,7 @@ class WeekData {
 	{
 		weeksList = [];
 		weeksLoaded.clear();
-		#if windows 
+		#if desktop 
 		var disabledMods:Array<String> = [];
 		var modsListPath:String = 'modsList.txt';
 		var directories:Array<String> = [Paths.mods(), Paths.getPreloadPath()];
@@ -141,7 +141,7 @@ class WeekData {
 					if(week != null) {
 						var weekFile:WeekData = new WeekData(week, sexList[i]);
 
-						#if windows 
+						#if desktop 
 						if(j >= originalLength) {
 							weekFile.folder = directories[j].substring(Paths.mods().length, directories[j].length-1);
 						}
@@ -156,7 +156,7 @@ class WeekData {
 			}
 		}
 
-		#if windows 
+		#if desktop 
 		for (i in 0...directories.length) {
 			var directory:String = directories[i] + 'weeks/';
 			if(FileSystem.exists(directory)) {
@@ -193,7 +193,7 @@ class WeekData {
 				var weekFile:WeekData = new WeekData(week, weekToCheck);
 				if(i >= originalLength)
 				{
-					#if windows 
+					#if desktop 
 					weekFile.folder = directory.substring(Paths.mods().length, directory.length-1);
 					#end
 				}
@@ -208,7 +208,7 @@ class WeekData {
 
 	private static function getWeekFile(path:String):WeekFile {
 		var rawJson:String = null;
-		#if windows 
+		#if desktop 
 		if(FileSystem.exists(path)) {
 			rawJson = File.getContent(path);
 		}
@@ -237,17 +237,18 @@ class WeekData {
 	}
 
 	public static function setDirectoryFromWeek(?data:WeekData = null) {
-		Paths.currentModDirectory = '';
-		if(data != null && data.folder != null && data.folder.length > 0) {
-			Paths.currentModDirectory = data.folder;
-		}
+		// Paths.currentModDirectory = '';
+		// if(data != null && data.folder != null && data.folder.length > 0) {
+		// 	Paths.currentModDirectory = data.folder;
+		// }
+        Paths.currentModDirectory = "shared";
 	}
 
 	public static function loadTheFirstEnabledMod()
 	{
 		Paths.currentModDirectory = '';
 		
-		#if windows 
+		#if desktop 
 		if (FileSystem.exists("modsList.txt"))
 		{
 			var list:Array<String> = CoolUtil.listFromString(File.getContent("modsList.txt"));

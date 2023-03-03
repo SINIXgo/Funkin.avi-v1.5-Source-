@@ -6,61 +6,35 @@ import flixel.input.keyboard.FlxKey;
 import flixel.graphics.FlxGraphic;
 import Controls;
 
-class ClientPrefs
-    {
-	public static var screenShake:Bool = true;
-    public static var language:String = "English";
-	public static var cutscenes:Bool = false;
-	public static var FPStext:Bool = false;
-	public static var colorblind:String = "No color filter";
-	public static var lives:String = 'normal';
-	public static var mechanics:Bool = true;
-	public static var events:Bool = false;
-	public static var outdated:Bool = false;
+class ClientPrefs {
 	public static var downScroll:Bool = false;
 	public static var middleScroll:Bool = false;
-	public static var antiMash:Bool = true;
-	public static var hudSelection:String = "Psych";
-	public static var center:Bool = true;
-	public static var keAccuracy:Bool = false;
-	public static var ratingSystem:String = "Bedrock";
-	public static var laneunderlay:Bool = false;
-	public static var laneTransparency:Float = 0.5;
-	public static var debugMode:Bool = false;
-	public static var iconBounce:String = 'Default';
-	public static var camMove:Bool = true;
-	public static var marvelouses:Bool = true;
+	public static var opponentStrums:Bool = true;
 	public static var showFPS:Bool = true;
 	public static var flashing:Bool = true;
-	public static var hideJudgement:Bool = false;
-	public static var longBar:Bool = true;
 	public static var globalAntialiasing:Bool = true;
 	public static var noteSplashes:Bool = true;
 	public static var lowQuality:Bool = false;
-	public static var framerate:Int = 240;
+	public static var freeplayUnlocked:Bool = false;
+	public static var shaders:String = "All";
+	public static var laneUnderlay:Float = 0;
+	public static var framerate:Int = 60;
 	public static var cursing:Bool = true;
 	public static var violence:Bool = true;
 	public static var camZooms:Bool = true;
 	public static var hideHud:Bool = false;
-	public static var funiShaders:Bool = true;
 	public static var noteOffset:Int = 0;
-	public static var simplifiedScore:Bool = false;
 	public static var arrowHSV:Array<Array<Int>> = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]];
-	public static var imagesPersist:Bool = false;
 	public static var ghostTapping:Bool = true;
 	public static var timeBarType:String = 'Time Left';
-	public static var uiSkin:String = 'Demolition';
 	public static var scoreZoom:Bool = true;
 	public static var noReset:Bool = false;
 	public static var healthBarAlpha:Float = 1;
 	public static var controllerMode:Bool = true;
-	public static var screenRes:String = '1280x720';
-	public static var fullscreen:Bool = false;
-	public static var showWatermarks:Bool = true;
-	public static var winningIcon:Bool = true;
 	public static var hitsoundVolume:Float = 0;
-	public static var restart:Bool = false;
 	public static var pauseMusic:String = 'Tea Time';
+	public static var checkForUpdates:Bool = true;
+	public static var comboStacking = true;
 	public static var gameplaySettings:Map<String, Dynamic> = [
 		'scrollspeed' => 1.0,
 		'scrolltype' => 'multiplicative', 
@@ -79,19 +53,11 @@ class ClientPrefs
 		'instakill' => false,
 		'practice' => false,
 		'botplay' => false,
-		//Future Game Modifiers????
-		'opponentplay' => false,
-		'drunknotes' => false,
-		'jacks' => false,
-		'blindness' => false,
-		'mirror' => false,
-		'noholds' => false,
-		'endless' => false //you got to be fucking out of your mind to play this
+		'opponentplay' => false
 	];
 
 	public static var comboOffset:Array<Int> = [0, 0, 0, 0];
 	public static var ratingOffset:Int = 0;
-	public static var marvelousWindow:Int = 25;
 	public static var sickWindow:Int = 45;
 	public static var goodWindow:Int = 90;
 	public static var badWindow:Int = 135;
@@ -130,70 +96,44 @@ class ClientPrefs
 	}
 
 	public static function saveSettings() {
-		FlxG.save.data.restart = restart;
-		FlxG.save.data.screenShake = screenShake;
-		FlxG.save.data.language = language;
-		FlxG.save.data.cutscens = cutscenes;
-		FlxG.save.data.colorblind = colorblind;
-		FlxG.save.data.FPStext = FPStext;
-		FlxG.save.data.events = events;
-		FlxG.save.data.outdated = outdated;
 		FlxG.save.data.downScroll = downScroll;
-		FlxG.save.data.laneunderlay = laneunderlay;
-		FlxG.save.data.laneTransparency = laneTransparency;
-		FlxG.save.data.debugMode = debugMode;
-		FlxG.save.data.marvelouses = marvelouses;
 		FlxG.save.data.middleScroll = middleScroll;
-		FlxG.save.data.camMove = camMove;
+		FlxG.save.data.opponentStrums = opponentStrums;
 		FlxG.save.data.showFPS = showFPS;
 		FlxG.save.data.flashing = flashing;
-		FlxG.save.data.winningIcon = winningIcon;
-		FlxG.save.data.iconBounce = iconBounce;
-		FlxG.save.data.simplifiedScore = simplifiedScore;
 		FlxG.save.data.globalAntialiasing = globalAntialiasing;
 		FlxG.save.data.noteSplashes = noteSplashes;
-		FlxG.save.data.longBar = longBar;
-		FlxG.save.data.hudSelection = hudSelection;
-		FlxG.save.data.mechanics = mechanics;
 		FlxG.save.data.lowQuality = lowQuality;
+		FlxG.save.data.freeplayUnlocked = freeplayUnlocked;
+		FlxG.save.data.shaders = shaders;
 		FlxG.save.data.framerate = framerate;
-		FlxG.save.data.antiMash = antiMash;
-		FlxG.save.data.lives = lives;
 		//FlxG.save.data.cursing = cursing;
 		//FlxG.save.data.violence = violence;
-		FlxG.save.data.keAccuracy = keAccuracy;
-		FlxG.save.data.funiShaders = funiShaders;
 		FlxG.save.data.camZooms = camZooms;
 		FlxG.save.data.noteOffset = noteOffset;
 		FlxG.save.data.hideHud = hideHud;
-		FlxG.save.data.hideJudgement = hideJudgement;
-		FlxG.save.data.ratingSystem = ratingSystem;
+		FlxG.save.data.laneUnderlay = laneUnderlay;
 		FlxG.save.data.arrowHSV = arrowHSV;
-		FlxG.save.data.imagesPersist = imagesPersist;
 		FlxG.save.data.ghostTapping = ghostTapping;
 		FlxG.save.data.timeBarType = timeBarType;
-		FlxG.save.data.uiSkin = uiSkin;
 		FlxG.save.data.scoreZoom = scoreZoom;
 		FlxG.save.data.noReset = noReset;
 		FlxG.save.data.healthBarAlpha = healthBarAlpha;
 		FlxG.save.data.comboOffset = comboOffset;
 		FlxG.save.data.achievementsMap = Achievements.achievementsMap;
 		FlxG.save.data.henchmenDeath = Achievements.henchmenDeath;
-		FlxG.save.data.center = center;
 
 		FlxG.save.data.ratingOffset = ratingOffset;
-		FlxG.save.data.marvelousWindow = marvelousWindow;
 		FlxG.save.data.sickWindow = sickWindow;
 		FlxG.save.data.goodWindow = goodWindow;
 		FlxG.save.data.badWindow = badWindow;
 		FlxG.save.data.safeFrames = safeFrames;
 		FlxG.save.data.gameplaySettings = gameplaySettings;
 		FlxG.save.data.controllerMode = controllerMode;
-		FlxG.save.data.screenRes = screenRes;
-		FlxG.save.data.fullscreen = fullscreen;
-		FlxG.save.data.showWatermarks = showWatermarks;
 		FlxG.save.data.hitsoundVolume = hitsoundVolume;
 		FlxG.save.data.pauseMusic = pauseMusic;
+		FlxG.save.data.checkForUpdates = checkForUpdates;
+		FlxG.save.data.comboStacking = comboStacking;
 	
 		FlxG.save.flush();
 
@@ -202,88 +142,18 @@ class ClientPrefs
 		save.data.customControls = keyBinds;
 		save.flush();
 		FlxG.log.add("Settings saved!");
+		trace("Settings saved!");
 	}
 
-	public static function loadPrefs() {	
-		if(FlxG.save.data.restar != null) {
-			restart = FlxG.save.data.rstart;
-		}
-		if(FlxG.save.data.colorblind != null) {
-			colorblind = FlxG.save.data.colorblind;
-		}
-		if(FlxG.save.data.screenShake != null) {
-			screenShake = FlxG.save.data.screenShake;
-		}
-		if(FlxG.save.data.hudSelection != null) {
-			hudSelection = FlxG.save.data.hudSelection;
-		}
-	    if(FlxG.save.data.language != null) {
-			language = FlxG.save.data.language;
-		}
-		if(FlxG.save.data.cutscenes != null) {
-			cutscenes = FlxG.save.data.cutscenes;
-		}
-		if(FlxG.save.data.FPStext != null) {
-			FPStext = FlxG.save.data.FPStext;
-		}
-		if(FlxG.save.data.mechanics != null) {
-			mechanics = FlxG.save.data.mechanics;
-		}
-		if(FlxG.save.data.events != null) {
-			events = FlxG.save.data.events;
-		}
-		if(FlxG.save.data.outdated != null) {
-			outdated = FlxG.save.data.outdated;
-		}
-		if(FlxG.save.data.lives != null) {
-			lives = FlxG.save.data.lives;
-		}
-
-		if(FlxG.save.data.debugMode != null) {
-			debugMode = FlxG.save.data.debugMode;
-		}
-		if (FlxG.save.data.center != null) {
-			center = FlxG.save.data.center;
-		}
-		if (FlxG.save.data.funiShaders != null) {
-			funiShaders = FlxG.save.data.funiShaders;
-		}
-		if(FlxG.save.data.winningIcon != null) {
-			winningIcon = FlxG.save.data.winningIcon;
-		}
+	public static function loadPrefs() {
 		if(FlxG.save.data.downScroll != null) {
 			downScroll = FlxG.save.data.downScroll;
-		}
-		if(FlxG.save.data.marvelouses != null) {
-			marvelouses = FlxG.save.data.marvelouses;
-		}
-		if(FlxG.save.data.antiMash != null) {
-			antiMash = FlxG.save.data.antiMash;
-		}
-		if(FlxG.save.data.iconBounce != null) {
-			iconBounce = FlxG.save.data.iconBounce;
 		}
 		if(FlxG.save.data.middleScroll != null) {
 			middleScroll = FlxG.save.data.middleScroll;
 		}
-		if(FlxG.save.data.camMove != null) {
-			camMove = FlxG.save.data.camMove;
-		}
-		if(FlxG.save.data.laneunderlay != null) {
-			laneunderlay = FlxG.save.data.laneunderlay;
-		}
-		if (FlxG.save.data.keAccuracy != null)
-		{
-			keAccuracy = FlxG.save.data.keAccuracy;
-		}
-		if(FlxG.save.data.laneTransparency != null) {
-			laneTransparency = FlxG.save.data.laneTransparency;
-		}
-		if(FlxG.save.data.longBar != null) {
-			longBar = FlxG.save.data.longBar;
-		}
-		if(FlxG.save.data.simplifiedScore != null) {
-			simplifiedScore = FlxG.save.data.simplifiedScore;
+		if(FlxG.save.data.opponentStrums != null) {
+			opponentStrums = FlxG.save.data.opponentStrums;
 		}
 		if(FlxG.save.data.showFPS != null) {
 			showFPS = FlxG.save.data.showFPS;
@@ -300,15 +170,14 @@ class ClientPrefs
 		if(FlxG.save.data.noteSplashes != null) {
 			noteSplashes = FlxG.save.data.noteSplashes;
 		}
-		if(FlxG.save.data.hideJudgement != null) {
-			hideJudgement = FlxG.save.data.hideJudgement;
-		}
-		if (FlxG.save.data.ratingSystem != null)
-		{
-			ratingSystem = FlxG.save.data.ratingSystem;
-		}
 		if(FlxG.save.data.lowQuality != null) {
 			lowQuality = FlxG.save.data.lowQuality;
+		}
+		if(FlxG.save.data.freeplayUnlocked != null){
+			freeplayUnlocked = FlxG.save.data.freeplayUnlocked;
+		}
+		if(FlxG.save.data.shaders != null) {
+			shaders = FlxG.save.data.shaders;
 		}
 		if(FlxG.save.data.framerate != null) {
 			framerate = FlxG.save.data.framerate;
@@ -332,6 +201,10 @@ class ClientPrefs
 		if(FlxG.save.data.hideHud != null) {
 			hideHud = FlxG.save.data.hideHud;
 		}
+		if(FlxG.save.data.laneUnderlay != null) {
+			laneUnderlay = FlxG.save.data.laneUnderlay;
+		}
+
 		if(FlxG.save.data.noteOffset != null) {
 			noteOffset = FlxG.save.data.noteOffset;
 		}
@@ -343,9 +216,6 @@ class ClientPrefs
 		}
 		if(FlxG.save.data.timeBarType != null) {
 			timeBarType = FlxG.save.data.timeBarType;
-		}
-		if (FlxG.save.data.uiSkin != null) {
-			uiSkin = FlxG.save.data.uiSkin;
 		}
 		if(FlxG.save.data.scoreZoom != null) {
 			scoreZoom = FlxG.save.data.scoreZoom;
@@ -363,9 +233,6 @@ class ClientPrefs
 		if(FlxG.save.data.ratingOffset != null) {
 			ratingOffset = FlxG.save.data.ratingOffset;
 		}
-		if(FlxG.save.data.marvelousWindow != null) {
-			marvelousWindow = FlxG.save.data.marvelousWindow;
-		}
 		if(FlxG.save.data.sickWindow != null) {
 			sickWindow = FlxG.save.data.sickWindow;
 		}
@@ -380,16 +247,6 @@ class ClientPrefs
 		}
 		if(FlxG.save.data.controllerMode != null) {
 			controllerMode = FlxG.save.data.controllerMode;
-		}
-		if(FlxG.save.data.screenRes != null) {
-			screenRes = FlxG.save.data.screenRes;
-		}
-		if(FlxG.save.data.fullscreen != null) {
-			fullscreen = FlxG.save.data.fullscreen;
-		}
-		if (FlxG.save.data.showWatermarks != null)
-		{
-			showWatermarks = FlxG.save.data.showWatermarks;
 		}
 		if(FlxG.save.data.hitsoundVolume != null) {
 			hitsoundVolume = FlxG.save.data.hitsoundVolume;
@@ -415,6 +272,12 @@ class ClientPrefs
 		{
 			FlxG.sound.muted = FlxG.save.data.mute;
 		}
+		if (FlxG.save.data.checkForUpdates != null)
+		{
+			checkForUpdates = FlxG.save.data.checkForUpdates;
+		}
+		if (FlxG.save.data.comboStacking != null)
+			comboStacking = FlxG.save.data.comboStacking;
 
 		var save:FlxSave = new FlxSave();
 		save.bind('controls_v2', 'ninjamuffin99');
