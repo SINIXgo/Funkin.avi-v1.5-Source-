@@ -53,6 +53,14 @@ class StageData {
 					stage = 'schoolEvil';
 				case 'ugh' | 'guns' | 'stress':
 					stage = 'tank';
+				case 'isolated' | 'isolated-old' | 'lunacy' | 'delusional':
+					stage = 'EndlessLoop';
+				case 'twisted-grins':
+					stage = 'Office';
+				case 'hunted':
+					stage = 'Forest';
+				case 'malfunction':
+					stage = 'PixelWorld';
 				default:
 					stage = 'stage';
 			}
@@ -72,7 +80,7 @@ class StageData {
 		var rawJson:String = null;
 		var path:String = Paths.getPreloadPath('stages/' + stage + '.json');
 
-		#if desktop 
+		#if windows 
 		var modPath:String = Paths.modFolders('stages/' + stage + '.json');
 		if(FileSystem.exists(modPath)) {
 			rawJson = File.getContent(modPath);

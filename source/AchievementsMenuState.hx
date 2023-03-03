@@ -52,10 +52,11 @@ class AchievementsMenuState extends MusicBeatState
 
 		for (i in 0...options.length) {
 			var achieveName:String = Achievements.achievementsStuff[achievementIndex[i]][2];
-			var optionText:Alphabet = new Alphabet(280, 300, Achievements.isAchievementUnlocked(achieveName) ? Achievements.achievementsStuff[achievementIndex[i]][0] : '?', false);
+			var optionText:Alphabet = new Alphabet(0, (100 * i) + 210, Achievements.isAchievementUnlocked(achieveName) ? Achievements.achievementsStuff[achievementIndex[i]][0] : 'Locked', false, false);
 			optionText.isMenuItem = true;
-			optionText.targetY = i - curSelected;
-			optionText.snapToPosition();
+			optionText.x += 280;
+			optionText.xAdd = 200;
+			optionText.targetY = i;
 			grpOptions.add(optionText);
 
 			var icon:AttachedAchievement = new AttachedAchievement(optionText.x - 105, optionText.y, achieveName);
@@ -71,6 +72,10 @@ class AchievementsMenuState extends MusicBeatState
 		add(descText);
 		changeSelection();
 
+		#if mobileC
+		addVirtualPad(UP_DOWN, A);
+		#end
+
 		super.create();
 	}
 
@@ -84,9 +89,9 @@ class AchievementsMenuState extends MusicBeatState
 			changeSelection(1);
 		}
 
-		if (controls.BACK) {
+		if (controls.ACCEPT) {
 			FlxG.sound.play(Paths.sound('cancelMenu'));
-			MusicBeatState.switchState(new ClassifiedMainMenu());
+			MusicBeatState.switchState(new MainMenuState());
 		}
 	}
 
@@ -116,7 +121,7 @@ class AchievementsMenuState extends MusicBeatState
 			}
 		}
 		descText.text = Achievements.achievementsStuff[achievementIndex[curSelected]][1];
-		// FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
+		FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
 	}
 	#end
 }

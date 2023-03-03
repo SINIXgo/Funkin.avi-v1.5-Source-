@@ -383,6 +383,7 @@ class Controls extends FlxActionSet
 	}
 	#end
 
+
 	#if android
 	public var trackedinputsUI:Array<FlxActionInput> = [];
 	public var trackedinputsNOTES:Array<FlxActionInput> = [];
@@ -513,7 +514,9 @@ class Controls extends FlxActionSet
 			}
 		}
 	}
-	#end	
+	#end
+
+
 	override function update()
 	{
 		super.update();
@@ -724,7 +727,6 @@ class Controls extends FlxActionSet
 		#end
 	}
 
-	
 	public function unbindKeys(control:Control, keys:Array<FlxKey>)
 	{
 		var copyKeys:Array<FlxKey> = keys.copy();
@@ -758,7 +760,7 @@ class Controls extends FlxActionSet
 		forEachBound(control, function(action, _) removeKeys(action, keys));
 		#end
 	}	
-	#end				
+	#end			
 	inline static function addKeys(action:FlxActionDigital, keys:Array<FlxKey>, state:FlxInputState)
 	{
 		for (key in keys)

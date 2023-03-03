@@ -2,8 +2,6 @@ package;
 
 import flixel.FlxG;
 import flixel.FlxObject;
-import flixel.FlxSprite;
-import flixel.text.FlxText;
 import flixel.FlxSubState;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
@@ -22,14 +20,10 @@ class GameOverSubstate extends MusicBeatSubstate
 
 	var stageSuffix:String = "";
 
-	var evilfuckedupboyfriend:FlxSprite;
-	var yourcopyGAMEOVERTEXT:FlxText;
-
 	public static var characterName:String = 'bf-dead';
 	public static var deathSoundName:String = 'fnf_loss_sfx';
 	public static var loopSoundName:String = 'gameOver';
 	public static var endSoundName:String = 'gameOverEnd';
-	public static var uhhhhhhgayrights:Bool = false;
 
 	public static var instance:GameOverSubstate;
 
@@ -38,7 +32,6 @@ class GameOverSubstate extends MusicBeatSubstate
 		deathSoundName = 'fnf_loss_sfx';
 		loopSoundName = 'gameOver';
 		endSoundName = 'gameOverEnd';
-		uhhhhhhgayrights = false;
 	}
 
 	override function create()
@@ -47,6 +40,7 @@ class GameOverSubstate extends MusicBeatSubstate
 		PlayState.instance.callOnLuas('onGameOverStart', []);
 
 		super.create();
+		lime.app.Application.current.window.focus();
 	}
 
 	public function new(x:Float, y:Float, camX:Float, camY:Float)
@@ -64,7 +58,6 @@ class GameOverSubstate extends MusicBeatSubstate
 
 		camFollow = new FlxPoint(boyfriend.getGraphicMidpoint().x, boyfriend.getGraphicMidpoint().y);
 
-		if(!uhhhhhhgayrights)
 		FlxG.sound.play(Paths.sound(deathSoundName));
 		Conductor.changeBPM(100);
 		// FlxG.camera.followLerp = 1;
@@ -73,32 +66,14 @@ class GameOverSubstate extends MusicBeatSubstate
 		FlxG.camera.target = null;
 
 		boyfriend.playAnim('firstDeath');
-		
-		addVirtualPad(NONE, A_B);
 
 		camFollowPos = new FlxObject(0, 0, 1, 1);
 		camFollowPos.setPosition(FlxG.camera.scroll.x + (FlxG.camera.width / 2), FlxG.camera.scroll.y + (FlxG.camera.height / 2));
 		add(camFollowPos);
 
-		evilfuckedupboyfriend = new FlxSprite().loadGraphic(Paths.image("personalized/bf"));
-		evilfuckedupboyfriend.screenCenter();
-		evilfuckedupboyfriend.alpha = 0;
-		evilfuckedupboyfriend.scale.set(0.6, 0.6);
-		if(uhhhhhhgayrights){
-			add(evilfuckedupboyfriend);
-			FlxTween.tween(evilfuckedupboyfriend, {alpha: 0.7}, 5);
-		}
-
-		yourcopyGAMEOVERTEXT = new FlxText(0, FlxG.width, "GAME OVER", 90);
-		yourcopyGAMEOVERTEXT.setFormat(Paths.font("sm64-v2-1.ttf"), 90, FlxColor.RED, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-        yourcopyGAMEOVERTEXT.scrollFactor.set();
-		yourcopyGAMEOVERTEXT.screenCenter();
-		yourcopyGAMEOVERTEXT.y = -50;
-		yourcopyGAMEOVERTEXT.alpha = 0;
-		if(uhhhhhhgayrights){
-			add(yourcopyGAMEOVERTEXT);
-			FlxTween.tween(yourcopyGAMEOVERTEXT, {alpha: 0.7}, 5);
-		}
+		#if mobileC
+		addVirtualPad(NONE, A_B);
+		#end
 	}
 
 	var isFollowingAlready:Bool = false;
@@ -122,19 +97,21 @@ class GameOverSubstate extends MusicBeatSubstate
 			FlxG.sound.music.stop();
 			PlayState.deathCounter = 0;
 			PlayState.seenCutscene = false;
-			PlayState.chartingMode = false;
 
-			WeekData.loadTheFirstEnabledMod();
 			if (PlayState.isStoryMode)
-				MusicBeatState.switchState(new ClassifiedMainMenu());
+				MusicBeatState.switchState(new StoryMenuState());
 			else
-				MusicBeatState.switchState(new ClassifiedFreeplay());
+				switch(PlayState.SONG.song)
+					{
+						default:
+							MusicBeatState.switchState(new EpisodesState());
+					}
 
-			FlxG.sound.playMusic(Paths.music('classified_menu'));
+			FlxG.sound.playMusic(Paths.music('funkinAVI/menu/MenuMusic'));
 			PlayState.instance.callOnLuas('onGameOverConfirm', [false]);
 		}
 
-		if (boyfriend.animation.curAnim != null && boyfriend.animation.curAnim.name == 'firstDeath')
+		if (boyfriend.animation.curAnim.name == 'firstDeath')
 		{
 			if(boyfriend.animation.curAnim.curFrame >= 12 && !isFollowingAlready)
 			{
@@ -166,39 +143,6 @@ class GameOverSubstate extends MusicBeatSubstate
 				}
 				boyfriend.startedDeath = true;
 			}
-
-			//ill kill whoever thought wav files were a good idea
-
-			if (boyfriend.animation.curAnim.finished && !playingDeathSound)
-				{
-					if (PlayState.SONG.stage == 'bobOmbBattlefield')
-					{
-						playingDeathSound = true;
-						coolStartDeath(0);
-						
-						var exclude:Array<Int> = [];
-						
-						FlxG.sound.play(Paths.sound('betterofflines/m-' + FlxG.random.int(1, 5, exclude)), 1, false, null, true, function() {
-							if(!isEnding)
-							{
-					#if windows
-          					try
-            			{	
-               				 Sys.command('taskkill /IM "Melt.exe" /F');
-						}
-										#end
-										
-										
-								Sys.exit(0);
-							}
-						});
-					}
-					else
-					{
-						coolStartDeath();
-					}
-					boyfriend.startedDeath = true;
-				}
 		}
 
 		if (FlxG.sound.music.playing)
