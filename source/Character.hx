@@ -1,5 +1,5 @@
 package;
-
+characters
 import animateatlas.AtlasFrameMaker;
 import flixel.FlxG;
 import flixel.FlxSprite;
