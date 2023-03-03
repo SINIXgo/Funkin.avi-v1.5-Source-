@@ -1,5 +1,5 @@
 package;
-
+Q se ta fazendo aqui
 #if desktop
 import Discord.DiscordClient;
 #end
