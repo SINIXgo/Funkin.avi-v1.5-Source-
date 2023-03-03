@@ -53,7 +53,7 @@ class ClientPrefs
 	public static var scoreZoom:Bool = true;
 	public static var noReset:Bool = false;
 	public static var healthBarAlpha:Float = 1;
-	public static var controllerMode:Bool = false;
+	public static var controllerMode:Bool = true;
 	public static var screenRes:String = '1280x720';
 	public static var fullscreen:Bool = false;
 	public static var showWatermarks:Bool = true;

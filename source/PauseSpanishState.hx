@@ -221,6 +221,10 @@ class PauseSpanishState extends MusicBeatSubstate
 		changeSelection();
 
 		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
+
+		#if mobileC
+		addVirtualPad(UP_DOWN, A);
+		#end
 	}
 
 	var holdTime:Float = 0;

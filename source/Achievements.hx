@@ -11,7 +11,7 @@ using StringTools;
 
 class Achievements {
 	public static var achievementsStuff:Array<Dynamic> = [ //Name, Description, Achievement save tag, Hidden achievement
-	    ["We Be Gamin'",		        "Log To GameJolt!",				                    'gamejolt',		    false],
+	  //  ["We Be Gamin'",		        "Log To GameJolt!",				                    'gamejolt',		    false],
 		["Nothing is Real...",		    "Complete Episode 1.",				                'episode1',		    false],
 		["'Smiling For The Show.'",		"Complete Episode 2.",				                'episode2',			false],
 		["True Satanist",				"FC Episode 1.",									'episode1_nomiss',	false],

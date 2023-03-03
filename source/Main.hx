@@ -1,7 +1,5 @@
 package;
 
-import GameJolt;
-import GameJolt.GameJoltAPI;
 import flixel.graphics.FlxGraphic;
 import flixel.FlxG;
 import flixel.FlxGame;
@@ -31,12 +29,12 @@ class Main extends Sprite
 {
 	var gameWidth:Int = 1280; // Width of the game in pixels (might be less / more in actual pixels depending on your zoom).
 	var gameHeight:Int = 720; // Height of the game in pixels (might be less / more in actual pixels depending on your zoom).
-	var initialState:Class<FlxState> = MainLoad; // The FlxState the game starts with.
+	var initialState:Class<FlxState> = TitleState; // The FlxState the game starts with.
 	var zoom:Float = -1; // If -1, zoom is automatically calculated to fit the window dimensions.
 	var framerate:Int = 60; // Wowwowoowowowowowowowowowowowowowowowow wtf dude, start with at least 120 FPS
 	var skipSplash:Bool = true; // Hope we add this to the mod xd
 	var startFullscreen:Bool = false; // N o
-	public static var gjToastManager:GJToastManager; //Toast For Advice
+
 	public static var fpsVar:FPS;
 
 	public static var focusMusicTween:FlxTween;
@@ -74,8 +72,6 @@ class Main extends Sprite
 
 	private function setupGame():Void
 	{
-		gjToastManager = new GJToastManager();
-		addChild(gjToastManager); //adding the toddler
 		
 		var stageWidth:Int = Lib.current.stage.stageWidth;
 		var stageHeight:Int = Lib.current.stage.stageHeight;
@@ -94,13 +90,13 @@ class Main extends Sprite
 		}
 
 		#if !debug
-		initialState = MainLoad;
+		initialState = TitleState;
 		#end
 	
 		ClientPrefs.loadDefaultKeys();
 		addChild(new FlxGame(gameWidth, gameHeight, initialState, zoom, framerate, framerate, skipSplash, startFullscreen));
 
-		#if !mobile
+		
 		fpsVar = new FPS(10, 3, 0xFFFFFF);
 		addChild(fpsVar);
 		Lib.current.stage.align = "tl";
@@ -108,14 +104,17 @@ class Main extends Sprite
 		if(fpsVar != null) {
 			fpsVar.visible = ClientPrefs.showFPS;
 		}
-		#end
+		
+			
 
 		FlxG.autoPause = false;
 		FlxG.mouse.visible = false;
 
+		#if desktop
 		Application.current.window.fullscreen = false;
 		Application.current.window.onFocusOut.add(onWindowFocusOut);
 		Application.current.window.onFocusIn.add(onWindowFocusIn);
+		#end
 	}
 
 	var game:FlxGame;
@@ -123,7 +122,7 @@ class Main extends Sprite
 	var newVol:Float = 0.3;
 
 	public static var focused:Bool = true;
-
+        
 	// funi Indie Cross volume code
 	function onWindowFocusOut()
 		{
@@ -186,7 +185,7 @@ class Main extends Sprite
 				FlxG.drawFramerate = 120;
 			}
 		}
-
+                
 		/*function onCrash(e:UncaughtErrorEvent):Void
 			{
 				var errMsg:String = "";

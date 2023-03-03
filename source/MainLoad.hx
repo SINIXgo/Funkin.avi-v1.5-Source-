@@ -1,6 +1,5 @@
 
 package;
-import GameJolt.GameJoltAPI as GameJolt;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.addons.transition.FlxTransitionSprite.GraphicTransTileDiamond;
@@ -44,9 +43,6 @@ class MainLoad extends MusicBeatState
 
 	override function create()
 	{
-        GameJolt.connect();
-        GameJolt.authDaUser(FlxG.save.data.gjUser, FlxG.save.data.gjToken); //Loads GameJolt stuff
-
 		FlxG.mouse.visible = true;
 
 		FlxG.worldBounds.set(0,0);
@@ -63,16 +59,17 @@ class MainLoad extends MusicBeatState
 		text.alignment = FlxTextAlign.CENTER;
 		text.alpha = 0;
 		add(text);
-
-		#if cpp
-		for (i in FileSystem.readDirectory(FileSystem.absolutePath("assets/shared/images/characters")))
+              
+		#if sys 
+		//Splash Cache lol	
+		for (i in HSys.readDirectory("assets/shared/images/NoteSplashSkins"))
 		{
 			if (!i.endsWith(".png"))
 				continue;
 			images.push(i);
 		}
-
-		for (i in FileSystem.readDirectory(FileSystem.absolutePath("assets/songs")))
+                //Songs Cache Lol²
+		for (i in HSys.readDirectory("assets/songs"))
 		{
 			music.push(i);
 		}
@@ -98,7 +95,7 @@ class MainLoad extends MusicBeatState
 		for (i in images)
 		{
 			var replaced = i.replace(".png","");
-			var data:BitmapData = BitmapData.fromFile("assets/shared/images/characters");
+			var data:BitmapData = BitmapData.fromFile("assets/shared/images/NoteSplashSkins");
 			var graph = FlxGraphic.fromBitmapData(data);
 			graph.persist = true;
 			graph.destroyOnNoUse = false;

@@ -133,6 +133,10 @@ class DisclaimerState extends MusicBeatState
 		grain.scale.y = 1.1;
 		add(grain);
 
+		#if mobileC
+		addVirtualPad(NONE, A_B);
+		#end
+
 		FlxTween.tween(blackFade, {alpha: 0}, 1);
 	}
 

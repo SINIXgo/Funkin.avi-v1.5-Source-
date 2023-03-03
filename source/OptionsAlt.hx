@@ -50,6 +50,7 @@ class OptionsAlt extends MusicBeatState
 				openSubState(new options.GameplaySettingsSubState());
 			case 'Adjust Delay and Combo':
 				LoadingState.loadAndSwitchState(new options.NoteOffsetState());
+			
 			/*case 'Note Skins':
 				LoadingState.loadAndSwitchState(new options.NoteSkinState());*/
 		}
@@ -115,6 +116,10 @@ class OptionsAlt extends MusicBeatState
 		grain.scale.y = 1.1;
 		add(grain);
 		
+		#if mobileC
+		addVirtualPad(UP_DOWN, A_B);
+		#end
+
 		super.create();
 	}
 

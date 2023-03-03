@@ -32,10 +32,6 @@ import openfl.filters.ShaderFilter;
 import Shaders;
 import IndieCrossShaderShit.FXHandler;
 
-//GameJolt
-import GameJolt;
-import GameJolt.GameJoltAPI;
-import tentools.api.FlxGameJolt as GJApi;
 import Main;
 
 using StringTools;
@@ -374,17 +370,6 @@ class MainMenuState extends MusicBeatState
 		FlxG.camera.follow(camFollowPos, null, 1);
 
 
-		if(ClientPrefs.language == "English") {
-	   var GameJoltText:FlxText = new FlxText(80, FlxG.height - -20, 0, "Story Mode Is Currently Disambled Until 2.0!", 25);
-		GameJoltText.scrollFactor.set();
-		GameJoltText.setFormat(Paths.font("NewWaltDisneyFontRegular-BPen.ttf"), 25, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-		add(GameJoltText);
-		} else {
-			var GameJoltText:FlxText = new FlxText(80, FlxG.height - -20, 0, "Modo Historia Esta Desabilitado hasta La 2.0!", 25);
-			GameJoltText.scrollFactor.set();
-			GameJoltText.setFormat(Paths.font("NewWaltDisneyFontRegular-BPen.ttf"), 25, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-			add(GameJoltText);
-		}
 		var versionShit:FlxText = new FlxText(12, FlxG.height - 84, 0, "Funkin.avi v" + MouseVersion, 12);
 		versionShit.scrollFactor.set();
 		versionShit.setFormat(Paths.font("NewWaltDisneyFontRegular-BPen.ttf"), 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
@@ -401,42 +386,6 @@ class MainMenuState extends MusicBeatState
 		versionShit.scrollFactor.set();
 		versionShit.setFormat(Paths.font("NewWaltDisneyFontRegular-BPen.ttf"), 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(versionShit);
-
-		if(!GameJoltAPI.userLogin && ClientPrefs.language == "Spanish") {
-			/*
-		var achievementText:FlxText = new FlxText(907, FlxG.height - 34, 0, "Presiona 8 para ir al menu de trofeos", 25);
-		achievementText.scrollFactor.set();
-		achievementText.setFormat(Paths.font("NewWaltDisneyFontRegular-BPen.ttf"), 25, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-		add(achievementText);*/
-
-		var GameJoltText:FlxText = new FlxText(907, FlxG.height - 54, 0, "Presiona 6 Para Iniciar Sesion en GameJolt", 25);
-		GameJoltText.scrollFactor.set();
-		GameJoltText.setFormat(Paths.font("NewWaltDisneyFontRegular-BPen.ttf"), 25, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-		add(GameJoltText);
-
-		} else if(!GameJoltAPI.userLogin && ClientPrefs.language == "English") {
-			/*
-		var achievementText:FlxText = new FlxText(937, FlxG.height - 34, 0, "Press 8 to go to the achievement menu", 25);
-		achievementText.scrollFactor.set();
-		achievementText.setFormat(Paths.font("NewWaltDisneyFontRegular-BPen.ttf"), 25, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-		add(achievementText);*/
-
-		var GameJoltText:FlxText = new FlxText(937, FlxG.height - 54, 0, "Press 6 to Login to GameJolt", 25);
-		GameJoltText.scrollFactor.set();
-		GameJoltText.setFormat(Paths.font("NewWaltDisneyFontRegular-BPen.ttf"), 25, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-		add(GameJoltText);
-		} else if(GameJoltAPI.userLogin && ClientPrefs.language == "English") {
-			/*
-		var achievementText:FlxText = new FlxText(937, FlxG.height - 34, 0, "Press 8 to go to the achievement menu", 25);
-		achievementText.scrollFactor.set();
-		achievementText.setFormat(Paths.font("NewWaltDisneyFontRegular-BPen.ttf"), 25, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-		add(achievementText);
-		} else if(GameJoltAPI.userLogin && ClientPrefs.language == "Spanish") {
-			var achievementText:FlxText = new FlxText(907, FlxG.height - 34, 0, "Presiona 8 Para Ir Al menu De Trofeos", 25);
-		achievementText.scrollFactor.set();
-		achievementText.setFormat(Paths.font("NewWaltDisneyFontRegular-BPen.ttf"), 25, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-		add(achievementText);*/
-		}
 
 		//Took me like 3 attemps
 
@@ -457,18 +406,6 @@ class MainMenuState extends MusicBeatState
 		}
 
 		Achievements.loadAchievements();
-		if(GameJoltAPI.userLogin) {
-			var achieveID:Int = Achievements.getAchievementIndex('gamejolt');
-			if(!Achievements.isAchievementUnlocked(Achievements.achievementsStuff[achieveID][2])) { //It's a friday night. WEEEEEEEEEEEEEEEEEE
-				Achievements.achievementsMap.set(Achievements.achievementsStuff[achieveID][2], true);
-				giveGameJoltAchievement();
-				if (!GameJoltAPI.checkTrophy(169870))
-				{
-					GameJoltAPI.getTrophy(169870);
-				}
-				ClientPrefs.saveSettings();
-			}
-		}
 		#end
 
 		var scratchStuff:FlxSprite = new FlxSprite();
@@ -492,14 +429,9 @@ class MainMenuState extends MusicBeatState
 		scratchStuff.cameras = [camFilter];
 		grain.cameras = [camFilter];
 
-		if(GameJoltAPI.userLogin == true) {
-			var LOGTEXT:FlxText = new FlxText(908, FlxG.height - -20, 0, "Loged To GameJolt!", 35);
-			LOGTEXT.scrollFactor.set();
-			LOGTEXT.setFormat(Paths.font("vcr.ttf"), 35, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-			FlxTween.tween(LOGTEXT, {y: 10}, 2);
-			LOGTEXT.borderSize = 0.6;
-			add(LOGTEXT);
-		}
+		#if mobileC
+		addVirtualPad(UP_DOWN, A_B);
+		#end
 
 		super.create();
 }
@@ -512,12 +444,6 @@ class MainMenuState extends MusicBeatState
 		trace('Giving achievement "friday_night_play"');
 	}
 
-	function giveGameJoltAchievement() {
-		add(new AchievementObject('gamejolt', camAchievement));
-		FlxG.save.data.achievementMap;
-		FlxG.sound.play(Paths.sound('funkinAVI/menu/select_sfx'), 0.7);
-		trace('Thanks For Login ' + GJApi.username);
-	}
 	#end
 
 	function addShader(effect:ShaderEffect)
@@ -645,10 +571,6 @@ class MainMenuState extends MusicBeatState
 				selectedSomethin = true;
 				MusicBeatState.switchState(new modPrevention.No());
 			}
-			else if (FlxG.keys.justPressed.SIX || FlxG.keys.justPressed.NUMPADSIX)
-				{
-					MusicBeatState.switchState(new GameJoltLogin());
-				}
 			#end
 			else if (FlxG.keys.justPressed.EIGHT || FlxG.keys.justPressed.NUMPADEIGHT)
 			{

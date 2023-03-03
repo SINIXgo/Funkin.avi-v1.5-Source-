@@ -38,8 +38,7 @@ class EpicSelectorWOOO extends MusicBeatState {
 	var chrom:ChromaticAberrationEffect;
 	var blurThisShit:TiltshiftEffect;
 	var greyscale:GreyscaleEffect;
-	var distort:WIDistortionEffect;
-
+	
 	var shaders:Array<ShaderEffect> = [];
 
 	//Spooky ass Mystery Effects OooooOOOooo
@@ -143,6 +142,10 @@ class EpicSelectorWOOO extends MusicBeatState {
 		add(grain);
 
         changeSelection();
+
+		#if mobileC
+		addVirtualPad(LEFT_FULL, A_B);
+		#end
         super.create();
     }
 
@@ -234,10 +237,7 @@ class EpicSelectorWOOO extends MusicBeatState {
 							chrom = new ChromaticAberrationEffect();
 							blurThisShit = new TiltshiftEffect(0.6, 0);
 
-							distort = new WIDistortionEffect(0.75, 0.25, false);
-							distort.shader.working.value = [true];
-
-							addShader(distort);
+							
 							addShader(chrom);
 							addShader(blurThisShit);
 
@@ -247,8 +247,7 @@ class EpicSelectorWOOO extends MusicBeatState {
 							if(blurThisShit != null)
 							blurThisShit.setBlur(0.6);
 
-							if (distort != null)
-							distort.shader.working.value = [true];
+							
 							}
 
 						}else if(curSelected == 1 && FPClientPrefs.isolatedSong != 'Completed' || FPClientPrefs.lunacySong != 'Completed' || FPClientPrefs.twistedSong != 'Completed' || FPClientPrefs.huntedLock != 'beaten' || FPClientPrefs.malfunctionLock != 'beaten' || FPClientPrefs.sinsLock != 'beaten' || FPClientPrefs.oldisolateLock != 'beaten'){
@@ -260,10 +259,7 @@ class EpicSelectorWOOO extends MusicBeatState {
 							chrom = new ChromaticAberrationEffect();
 							blurThisShit = new TiltshiftEffect(0.6, 0);
 
-							distort = new WIDistortionEffect(0.75, 0.25, false);
-							distort.shader.working.value = [true];
-
-							addShader(distort);
+							
 							addShader(chrom);
 							addShader(blurThisShit);
 
@@ -273,8 +269,7 @@ class EpicSelectorWOOO extends MusicBeatState {
 							if(blurThisShit != null)
 							blurThisShit.setBlur(0.6);
 
-							if (distort != null)
-							distort.shader.working.value = [true];
+							
 							}
 						}else{
 							FlxG.camera.flash(FlxColor.BLACK, 0.2);

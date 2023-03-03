@@ -1,6 +1,6 @@
 package;
 
-import GameJolt.GameJoltAPI;
+
 #if desktop
 import Discord.DiscordClient;
 import sys.thread.Thread;
@@ -43,8 +43,7 @@ import openfl.filters.ShaderFilter;
 import Shaders;
 import openfl.Assets;
 import PlayState;
-import GameJolt;
-import GameJolt.GameJoltAPI;
+
 import IndieCrossShaderShit.FXHandler;
 
 using StringTools;
@@ -103,8 +102,9 @@ class TitleState extends MusicBeatState
 
 	override public function create():Void
 	{
-		GameJolt.GameJoltAPI.connect();
-        GameJolt.GameJoltAPI.authDaUser(FlxG.save.data.gjUser, FlxG.save.data.gjToken);
+		#if android
+		FlxG.android.preventDefaultKeys = [BACK];
+		#end
 
 		Paths.clearStoredMemory();
 		Paths.clearUnusedMemory();
@@ -428,7 +428,7 @@ class TitleState extends MusicBeatState
 
 	public static function restartGame()
 		{
-			#if cpp
+			#if windows 
 			var os = Sys.systemName();
 			var args = "Test.hx";
 			var app = "";
