@@ -60,7 +60,7 @@
 
 	<define name="avi_debug" if="debug" />
 
-	<assets path="assets/preload" rename="assets" exclude="*.ogg" if="web"/>
+	<assets path="<assets path="assets/android" if="android"/>assets/preload" rename="assets" exclude="*.ogg" if="web"/>
 	<assets path="assets/preload" rename="assets" exclude="*.mp3"  unless="web"/>
 	<section if="TITLE_SCREEN_EASTER_EGG">
 		<assets path="assets/secrets" rename="assets" exclude="*.ogg" if="web"/>
