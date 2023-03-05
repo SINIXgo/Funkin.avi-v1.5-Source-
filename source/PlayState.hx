@@ -3,7 +3,7 @@ package; //Lord X Porn
 import Achievements;
 import DialogueBoxPsych;
 import FunkinLua;
-import GameJolt.GameJoltAPI;
+
 import GameJolt;
 import IndieCrossShaderShit.FXHandler;
 import Note.EventNote;
@@ -12,13 +12,15 @@ import Shaders;
 import Song.SwagSong;
 import StageData;
 import WiggleEffect.WiggleEffectType;
-import WindowAPI.WindowThing as Windowthing;
 import animateatlas.AtlasFrameMaker;
 import data.Etterna;
 import data.Ratings;
 import editors.CharacterEditorState;
 import editors.ChartingState;
 import flash.system.System;
+#if android
+import android.flixel.FlxVirtualPad;	
+#end	
 import flixel.FlxBasic;
 import flixel.FlxCamera;
 import flixel.FlxG;
@@ -256,6 +258,9 @@ class PlayState extends MusicBeatState
 	'coolswag'];
 	var dialogueJson:DialogueFile = null;
 
+	var waltText:FlxText;
+
+	var _vpad:FlxVirtualPad;
 	var halloweenBG:BGSprite;
 	var halloweenWhite:BGSprite;
 
@@ -1863,7 +1868,7 @@ class PlayState extends MusicBeatState
 		} else {
                 peWatermark.setFormat(Paths.font("Retro Gaming.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		}
-		#if desktop
+		#if dekstop
 		peWatermark.scrollFactor.set();
 		peWatermark.text = "Funkin.avi" + " | " + curSong + " (" + storyDifficultyText + ")";
 		peWatermark.visible = ClientPrefs.showWatermarks;
@@ -2102,8 +2107,14 @@ class PlayState extends MusicBeatState
 			default:
 				//nothing, that's it.
 		}
+                var creditTxt = new FlxText(876, 648, 348);
+     creditTxt.text = "PORTED BY\nFNF BR";
+    creditTxt.setFormat(Paths.font("vcr.ttf"), 30, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE,FlxColor.BLACK);
+    creditTxt.scrollFactor.set();
+    add(creditTxt);
 
 		strumLineNotes.cameras = [camHUD];
+                creditTxt.cameras = [camHUD];
 		grpNoteSplashes.cameras = [camHUD];
 		notes.cameras = [camHUD];
 		healthBar.cameras = [camHUD];
@@ -2130,7 +2141,15 @@ class PlayState extends MusicBeatState
 		songBanner.cameras = [camCustom];
 		songBannerText.cameras = [camCustom];
 		doof.cameras = [camHUD];
-		
+
+		#if android
+		addAndroidControls();
+		androidControls.visible = true;
+                _vpad = new FlxVirtualPad(NONE, A);
+	        _vpad.cameras = [camHUD];
+			this.add(_vpad);
+		#end
+
 		// if (SONG.song == 'South')
 		// FlxG.camera.alpha = 0.7;
 		// UI_camera.zoom = 1;
@@ -2138,31 +2157,25 @@ class PlayState extends MusicBeatState
 		// cameras = [FlxG.cameras.list[1]];
 		startingSong = true;
 
-		// SONG SPECIFIC SCRIPTS
 		#if LUA_ALLOWED
-		var filesPushed:Array<String> = [];
-		var foldersToCheck:Array<String> = [Paths.getPreloadPath('data/' + Paths.formatToSongPath(SONG.song) + '/')];
+		var doPush:Bool = false;
 
-		#if MODS_ALLOWED
-		foldersToCheck.insert(0, Paths.mods('data/' + Paths.formatToSongPath(SONG.song) + '/'));
-		if(Paths.currentModDirectory != null && Paths.currentModDirectory.length > 0)
-			foldersToCheck.insert(0, Paths.mods(Paths.currentModDirectory + '/data/' + Paths.formatToSongPath(SONG.song) + '/'));
-		#end
-
-		for (folder in foldersToCheck)
+		if(openfl.utils.Assets.exists("assets/data/" + Paths.formatToSongPath(SONG.song) + "/" + "precache.lua"))
 		{
-			if(FileSystem.exists(folder))
-			{
-				for (file in FileSystem.readDirectory(folder))
-				{
-					if(file.endsWith('.lua') && !filesPushed.contains(file))
-					{
-						luaArray.push(new FunkinLua(folder + file));
-						filesPushed.push(file);
-					}
-				}
-			}
+			var path = Paths.luaAsset("data/" + Paths.formatToSongPath(SONG.song) + "/" + "script");
+			var luaFile = openfl.Assets.getBytes(path);
+
+			FileSystem.createDirectory(Main.path + "assets/data");
+			FileSystem.createDirectory(Main.path + "assets/data/");
+			FileSystem.createDirectory(Main.path + "assets/data/" + Paths.formatToSongPath(SONG.song));
+																				  
+
+			File.saveBytes(Paths.lua("data/" + Paths.formatToSongPath(SONG.song) + "/" + "script"), luaFile);
+
+			doPush = true;
 		}
+		if(doPush) 
+			luaArray.push(new FunkinLua(Paths.lua("data/" + Paths.formatToSongPath(SONG.song) + "/" + "script")));
 		#end
 		
 		var daSong:String = Paths.formatToSongPath(curSong);
@@ -3646,8 +3659,8 @@ class PlayState extends MusicBeatState
 
 		FlxTween.tween(songBanner, {alpha: 0}, 1.5, {ease: FlxEase.circIn, startDelay: 4});
 		FlxTween.tween(songBannerText, {alpha: 0}, 1.5, {ease: FlxEase.circIn, startDelay: 4});
-
-		#if desktop //for prevent curPortrait error
+                #if desktop 
+		//for prevent curPortrait error
 		switch(curSong){
 			case "Isolated" | "Lunacy" | "Delusional": curPortrait = "placeholder";
 			case "Malfunction": curPortrait = "malfunction";
@@ -3719,11 +3732,9 @@ class PlayState extends MusicBeatState
 
 		var songName:String = Paths.formatToSongPath(SONG.song);
 		var file:String = Paths.json(songName + '/events');
-		#if sys
-		if (FileSystem.exists(Paths.modsJson(songName + '/events')) || FileSystem.exists(file)) {
-		#else
+		
 		if (OpenFlAssets.exists(file)) {
-		#end
+		
 			var eventsData:Array<Dynamic> = Song.loadFromJson('events', songName).events;
 			for (event in eventsData) //Event Notes
 			{
@@ -4170,7 +4181,7 @@ class PlayState extends MusicBeatState
 			iconP1.swapOldIcon();
 		}
 
-		if(FlxG.keys.justPressed.SPACE && shootin && canDodge) {
+		if(FlxG.keys.justPressed.SPACE || _vpad.buttonA.justPressed && shootin && canDodge) {
 			dodged = true;
 			canDodge = false;
 			new FlxTimer().start(1, function(tmr:FlxTimer) {
@@ -4436,7 +4447,7 @@ class PlayState extends MusicBeatState
 			botplayTxt.alpha = 1 - Math.sin((Math.PI * botplaySine) / 180);
 		}
 
-		if (controls.PAUSE && startedCountdown && canPause)
+		if (controls.PAUSE #if android || FlxG.android.justReleased.BACK #end && startedCountdown && canPause)
 		{
 			var ret:Dynamic = callOnLuas('onPause', []);
 			if(ret != FunkinLua.Function_Stop) {
@@ -4468,7 +4479,6 @@ class PlayState extends MusicBeatState
 				DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")", iconP2.getCharacter(), curPortrait);
 				#end
 			}
-		}
 
 		if (FlxG.keys.anyJustPressed(debugKeysChart) && !endingSong && !inCutscene)
 		{
@@ -4932,7 +4942,6 @@ class PlayState extends MusicBeatState
         windowBoyfriend.stage.addEventListener("keyDown", FlxG.keys.onKeyDown);
         @:privateAccess
         windowBoyfriend.stage.addEventListener("keyUp", FlxG.keys.onKeyUp);
-		Windowthing.getWindowsTransparent();
         // Application.current.window.x = Std.int(display.width / 2) - 640;
         // Application.current.window.y = Std.int(display.height / 2);
 
@@ -4944,7 +4953,6 @@ class PlayState extends MusicBeatState
         spr.graphics.beginBitmapFill(bg, m);
         spr.graphics.drawRect(0, 0, bg.width, bg.height);
         spr.graphics.endFill();
-		Windowthing.getWindowsTransparent();
         FlxG.mouse.useSystemCursor = true;
 
         //Application.current.window.resize(640, 480);
@@ -4954,25 +4962,17 @@ class PlayState extends MusicBeatState
         boyfriendWin.graphics.beginBitmapFill(boyfriend.pixels, m);
         boyfriendWin.graphics.drawRect(0, 0, boyfriend.pixels.width, boyfriend.pixels.height);
         boyfriendWin.graphics.endFill();
-		Windowthing.getWindowsTransparent();
 		
         bfScrollWin.scrollRect = new Rectangle();
 	    windowBoyfriend.stage.addChild(spr);
-		Windowthing.getWindowsTransparent();
         windowBoyfriend.stage.addChild(bfScrollWin);
-		Windowthing.getWindowsTransparent();
         bfScrollWin.addChild(boyfriendWin);
-		Windowthing.getWindowsTransparent();
         bfScrollWin.scaleX = 5;
-		Windowthing.getWindowsTransparent();
         bfScrollWin.scaleY = 5;
-		Windowthing.getWindowsTransparent();
         boyfriendGroup.visible = false;
-		Windowthing.getWindowsTransparent();
         // uncomment the line above if you want it to hide the dad ingame and make it visible via the windoe
         Application.current.window.focus();
 		FlxG.autoPause = false;
-		Windowthing.getWindowsTransparent();
 	}
 
 	function popupWindow(customWidth:Int, customHeight:Int, ?customX:Int, ?customY:Int, ?customName:String, ?isTransparent:Bool = false) {
@@ -5016,7 +5016,6 @@ class PlayState extends MusicBeatState
         spr.graphics.beginBitmapFill(bg, m);
         spr.graphics.drawRect(0, 0, bg.width, bg.height);
         spr.graphics.endFill();
-		Windowthing.getWindowsTransparent();
         FlxG.mouse.useSystemCursor = true;
 
       //  Application.current.window.resize(640, 480);
@@ -5028,22 +5027,14 @@ class PlayState extends MusicBeatState
         dadWin.graphics.endFill();
         dadScrollWin.scrollRect = new Rectangle();
 	    windowDad.stage.addChild(spr);
-		Windowthing.getWindowsTransparent();
         windowDad.stage.addChild(dadScrollWin);
-		Windowthing.getWindowsTransparent();
         dadScrollWin.addChild(dadWin);
-		Windowthing.getWindowsTransparent();
         dadScrollWin.scaleX = 0.7;
-		Windowthing.getWindowsTransparent();
         dadScrollWin.scaleY = 0.7;
-		Windowthing.getWindowsTransparent();
         dadGroup.visible = false;
-		Windowthing.getWindowsTransparent();
         // uncomment the line above if you want it to hide the dad ingame and make it visible via the windoe
         Application.current.window.focus();
-		Windowthing.getWindowsTransparent();
 		FlxG.autoPause = false;
-		Windowthing.getWindowsTransparent();
     }
 
 	function openChartEditor()
@@ -6330,23 +6321,7 @@ class PlayState extends MusicBeatState
 			{
 				trace('WENT BACK TO FREEPLAY??');
 
-				if(SONG.song == "Isolated Old") {
-			    	GameJoltAPI.addScore(songScore, 760676);
-				} else if(SONG.song == "Isolated") {
-					GameJoltAPI.addScore(songScore, 760684);
-				} else if(SONG.song == "Hunted") {
-					GameJoltAPI.addScore(songScore, 760677);
-				} else if(SONG.song == "Twisted Grins") {
-					GameJoltAPI.addScore(songScore, 760679);
-				} else if(SONG.song == "Lunacy") {
-					GameJoltAPI.addScore(songScore, 760686);
-				} else if(SONG.song == "Isolated Old") {
-					GameJoltAPI.addScore(songScore, 755529);
-				} else if(SONG.song == "Cycled Sins") {
-					GameJoltAPI.addScore(songScore, 755530);
-				} else if(SONG.song == "Malfunction") {
-					GameJoltAPI.addScore(songScore, 755531);
-				}
+
 
 				//Story Songs later Lol, Thanks Tenta
 				//note: don't put it yet because it will be public
@@ -7174,15 +7149,15 @@ class PlayState extends MusicBeatState
 									switch(note.noteType)
 									{
 										case 'AVI Sing':
-											aviMick.animation.play('AVILeft');
+											dad.animation.play('AVILeft');
 										case 'Rookie Sing':
-											rookieMick.animation.play('rookieLeft');
+											dad.animation.play('rookieLeft');
 										case 'WI Sing':
-											WIMick.animation.play('WILeft');
+											dad.animation.play('WILeft');
 										case 'Randy Sing':
-											randyMick.animation.play('randyLeft');
+											dad.animation.play('randyLeft');
 										case 'Cog Sing':
-											cogMick.animation.play('CogLeft');
+											dad.animation.play('CogLeft');
 									}	
 								}else{
 									animToPlay = 'singLEFT';
@@ -7244,15 +7219,15 @@ class PlayState extends MusicBeatState
 									switch(note.noteType)
 									{
 										case 'AVI Sing':
-											aviMick.animation.play('AVIDown');
+											dad.animation.play('AVIDown');
 										case 'Rookie Sing':
-											rookieMick.animation.play('rookieDown');
+											dad.animation.play('rookieDown');
 										case 'WI Sing':
-											WIMick.animation.play('WIDown');
+											dad.animation.play('WIDown');
 										case 'Randy Sing':
-											randyMick.animation.play('randyDown');
+											dad.animation.play('randyDown');
 										case 'Cog Sing':
-											cogMick.animation.play('CogDown');
+											dad.animation.play('CogDown');
 									}	
 								}else{
 									animToPlay = 'singDOWN';
@@ -7312,15 +7287,15 @@ class PlayState extends MusicBeatState
 									switch(note.noteType)
 									{
 										case 'AVI Sing':
-											aviMick.animation.play('AVIUp');
+											dad.animation.play('AVIUp');
 										case 'Rookie Sing':
-											rookieMick.animation.play('rookieUp');
+											dad.animation.play('rookieUp');
 										case 'WI Sing':
-											WIMick.animation.play('WIUp');
+											dad.animation.play('WIUp');
 										case 'Randy Sing':
-											randyMick.animation.play('randyUp');
+											dad.animation.play('randyUp');
 										case 'Cog Sing':
-											cogMick.animation.play('CogUp');
+											dad.animation.play('CogUp');
 									}	
 								}else{
 									animToPlay = 'singUP';
@@ -7380,15 +7355,15 @@ class PlayState extends MusicBeatState
 									switch(note.noteType)
 									{
 										case 'AVI Sing':
-											aviMick.animation.play('AVIRight');
+											dad.animation.play('AVIRight');
 										case 'Rookie Sing':
-											rookieMick.animation.play('rookieRight');
+											dad.animation.play('rookieRight');
 										case 'WI Sing':
-											WIMick.animation.play('WIRight');
+											dad.animation.play('WIRight');
 										case 'Randy Sing':
-											randyMick.animation.play('randyRight');
+											dad.animation.play('randyRight');
 										case 'Cog Sing':
-											cogMick.animation.play('CogRight');
+											dad.animation.play('CogRight');
 									}	
 								}else{
 									animToPlay = 'singRIGHT';
@@ -7469,27 +7444,27 @@ class PlayState extends MusicBeatState
 				case 'AVI Sing':
 					new FlxTimer().start(1.5, function(tmr:FlxTimer)
 					{
-						aviMick.animation.play('idle');
+						dad.animation.play('idle');
 					});
 				case 'Rookie Sing':
 					new FlxTimer().start(1.5, function(tmr:FlxTimer)
 					{
-						rookieMick.animation.play('idle');
+						dad.animation.play('idle');
 					});
 				case 'WI Sing':
 					new FlxTimer().start(1.5, function(tmr:FlxTimer)
 					{
-						WIMick.animation.play('idle');
+						dad.animation.play('idle');
 					});
 				case 'Randy Sing':
 					new FlxTimer().start(1.5, function(tmr:FlxTimer)
 					{
-						randyMick.animation.play('idle');
+						dad.animation.play('idle');
 					});
 				case 'Cog Sing':
 					new FlxTimer().start(1.5, function(tmr:FlxTimer)
 					{
-						cogMick.animation.play('idle');
+						dad.animation.play('idle');
 					});
 			}
 		}
@@ -8121,10 +8096,7 @@ class PlayState extends MusicBeatState
 	var lightningOffset:Int = 8;
 
 	var lastBeatHit:Int = -1;
-	
-	
-	
-	
+
 	override function beatHit()
 	{
 		super.beatHit();
@@ -9998,6 +9970,7 @@ class PlayState extends MusicBeatState
 		setOnLuas('curBeat', curBeat); //DAWGG?????
 		callOnLuas('onBeatHit', []);
 	}
+}
 
 	public var closeLuas:Array<FunkinLua> = [];
 	public function callOnLuas(event:String, args:Array<Dynamic>):Dynamic {
@@ -10152,8 +10125,7 @@ class PlayState extends MusicBeatState
 							if(SONG.song == 'Malfunction')
 							{
 								unlock = true;
-								if(!GameJoltAPI.checkTrophy(169789))
-									GameJoltAPI.getTrophy(169789);		
+
 							}
 						}
 					case 'malfunction_nomiss' | 'relapse_nomiss':
@@ -10164,8 +10136,7 @@ class PlayState extends MusicBeatState
 								if(achievementName == 'malfunction_nomiss')
 								{
 									unlock = true;
-									if(!GameJoltAPI.checkTrophy(169791))
-										GameJoltAPI.getTrophy(169791);		
+
 								}
 							}
 							if(SONG.song == 'Cycled Sins')
@@ -10173,8 +10144,7 @@ class PlayState extends MusicBeatState
 								if(achievementName == 'relapse_nomiss')
 								{ 
 									unlock = true;
-									if(!GameJoltAPI.checkTrophy(169790))
-										GameJoltAPI.getTrophy(169790);
+
 								}
 							}
 						}
@@ -10184,8 +10154,7 @@ class PlayState extends MusicBeatState
 						}
 					case 'ur_good':
 						if(ratingPercent >= 1 && !usedPractice) {
-							if(!GameJoltAPI.checkTrophy(169967))
-								GameJoltAPI.getTrophy(169967);
+
 							unlock = true;
 						}
 				}
@@ -10203,5 +10172,3 @@ class PlayState extends MusicBeatState
 	var curLight:Int = -1;
 	var curLightEvent:Int = -1;
 }
-
-
