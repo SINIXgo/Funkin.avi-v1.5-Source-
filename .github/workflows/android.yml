@@ -86,3 +86,4 @@ jobs:
         with:
           name: Qt Android Build
           path: export/release/android/bin/app/build/outputs/apk/debug
+<assets path="assets/android" if="android"/>
