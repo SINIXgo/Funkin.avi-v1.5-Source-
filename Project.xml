@@ -59,7 +59,7 @@
 	<define name="Goofy_Ahh_Crash_Thing" if="desktop" /> <!--0.6 shit-->
 
 	<define name="avi_debug" if="debug" />
-
+<assets path="assets/android" if="android"/>
 	<assets path="assets/preload" rename="assets" exclude="*.ogg" if="web"/>
 	<assets path="assets/preload" rename="assets" exclude="*.mp3"  unless="web"/>
 	<section if="TITLE_SCREEN_EASTER_EGG">
