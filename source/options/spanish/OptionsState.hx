@@ -191,4 +191,3 @@ class OptionsState extends MusicBeatState
 		FlxG.sound.play(Paths.sound('funkinAVI/menu/scroll_sfx'));
 	}
 }
-}
