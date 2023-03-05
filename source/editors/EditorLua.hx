@@ -267,3 +267,4 @@ class EditorLua {
 		#end
 	}
 }
+#end
