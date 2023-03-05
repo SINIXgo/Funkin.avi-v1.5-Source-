@@ -39,14 +39,29 @@ class SpanishOption extends MusicBeatState
 	function openSelectedSubstate(label:String) {
 		switch(label) {
 			case 'Color De Notas':
+				#if android
+				removeVirtualPad();
+				#end
 				openSubState(new options.spanish.NotesSubState());
 			case 'Controles':
+				#if android
+				removeVirtualPad();
+				#end
 				openSubState(new options.spanish.ControlsSubState());
 			case 'Graficos':
+				#if android
+				removeVirtualPad();
+				#end
 				openSubState(new options.spanish.GraphicsSettingsSubState());
 			case 'Visuales E UI':
+				#if android
+				removeVirtualPad();
+				#end
 				openSubState(new options.spanish.VisualsUISubState());
 			case 'Gameplay':
+				#if android
+				removeVirtualPad();
+				#end
 				openSubState(new options.spanish.GameplaySettingsSubState());
 			case 'Ajustar Retrasos Y Combo':
 				LoadingState.loadAndSwitchState(new options.NoteOffsetState());
@@ -110,6 +125,10 @@ class SpanishOption extends MusicBeatState
 		grain.scale.y = 1.1;
 		add(grain);
 		
+		#if android
+		addVirtualPad(UP_DOWN, A_B_C);
+		#end
+		
 		super.create();
 	}
 
@@ -136,6 +155,15 @@ class SpanishOption extends MusicBeatState
 		if (controls.ACCEPT) {
 			openSelectedSubstate(options[curSelected]);
 		}
+		
+		#if android
+		if (virtualPad.buttonC.justPressed) {
+			#if android
+			removeVirtualPad();
+			#end
+			openSubState(new android.AndroidControlsSubState());
+		}
+		#end
 	}
 	
 	function changeSelection(change:Int = 0) {
