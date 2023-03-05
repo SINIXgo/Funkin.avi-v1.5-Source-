@@ -3020,3 +3020,4 @@ class AttachedFlxText extends FlxText
 		}
 	}
 }
+}
